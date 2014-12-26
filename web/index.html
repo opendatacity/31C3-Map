@@ -1,0 +1,36 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>31C3 map</title>
+		
+		<link rel="stylesheet" type="text/css" href="assets/libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/libs/leaflet/leaflet.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+
+		<script type="text/javascript" src="assets/libs/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="assets/libs/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/libs/leaflet/leaflet.js"></script>
+		<script type="text/javascript" src="assets/js/main.js"></script>
+
+		<meta name="HandheldFriendly" content="True" />
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+	</head>
+	<body>
+		<div style="display:none">Zoomable map of the 31c3. You can also add a marker and send the deep link to share a meeting point.</div>
+		<div id="header">
+			<input id="searchtext" type="text" />
+			<div id="result"><ul></ul></div>
+			<!--
+			<div id="btnsearch" class="btn btn3m" data-toggle="button"><div id="search-icon"></div></div>
+		-->
+			<div id="btnmarker" class="btn btn3m" data-toggle="button"><div id="marker-icon"></div></div>
+		</div>
+		<div id="mapWrapper">
+			<div id="map"></div>
+		</div>
+		<div id="footer"><input type="text" id="url" /></div>
+	</body>
+</html>
