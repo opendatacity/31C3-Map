@@ -3,6 +3,7 @@ var mainFolder = path.join(__dirname, '../../');
 
 var config = {
 	imageFolder: mainFolder+'images/',
+	tileFolder: mainFolder+'web/tiles/',
 	usermapFolder: mainFolder+'../31c3-usermap/renderings/',
 	overview:{
 		iso: {

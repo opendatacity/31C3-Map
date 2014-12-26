@@ -8,7 +8,7 @@ module.exports = {
 	'originals': {
 		checkSkip:function (opts, cb) {
 			log.debug('\nconverters.originals.checkSkip');
-			U.filesExist(U.expandPattern(['originals/(0-4)_[iso,top].png']),cb)
+			U.filesExist(U.expandPattern([path.join(config.imageFolder, 'originals/(0-4)_[iso,top].png')]),cb)
 		},
 		convert:function (opts, cb) {
 			log.debug('\nconverters.originals.convert');
@@ -29,7 +29,7 @@ module.exports = {
 	'overview': {
 		checkSkip:function (opts, cb) {
 			log.debug('\nconverters.overview.checkSkip');
-			U.filesExist(['overview/overview_'+opts+'.png'], cb)
+			U.filesExist([path.join(config.imageFolder, 'overview/overview_'+opts+'.png')], cb)
 		},
 		convert:function (opts, cb) {
 			log.debug('\nconverters.overview.convert');
@@ -51,7 +51,7 @@ module.exports = {
 	'tiles': {
 		checkSkip:function (opts, cb) {
 			log.debug('\nconverters.tiles.checkSkip');
-			U.filesExist(['tiles/'+opts], cb)
+			U.filesExist([path.join(config.tileFolder, '/'+opts)], cb)
 		},
 		convert:function (opts, cb) {
 			log.debug('\nconverters.overview.convert');

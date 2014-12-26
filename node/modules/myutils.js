@@ -10,8 +10,7 @@ var gm = require('gm');
 function filesExist(list, callback) {
 	log.debug('\nmyutils.filesExist');
 
-	var allExists = list.every(function (item) {
-		var filename = path.join(config.imageFolder, item);
+	var allExists = list.every(function (filename) {
 		var result = fs.existsSync(filename);
 		log.debug('Does "'+filename+'" exist? Answer: ' + (result ? 'Yes!' : 'Nope! :('));
 		return result
@@ -160,7 +159,7 @@ function gmTiles(opts, callback) {
 	for (var i = 0; i <= maxDepth; i++) depths[i] = i;
 
 	var filename = path.join(config.imageFolder, opts.filename);
-	var tileFolder = path.join(config.imageFolder, opts.tileFolder);
+	var tileFolder = path.join(config.tileFolder, opts.tileFolder);
 
 	var image = gm(opts.imageSize, opts.imageSize, opts.background);
 	image.in('-compose', 'over');
