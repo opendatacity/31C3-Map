@@ -60,7 +60,7 @@ module.exports = {
 			var imageSize = 16*1024;
 			U.gmTiles({
 				filename:'overview/overview_'+opts+'.png',
-				tileFolder:'tiles/'+opts+'/',
+				tileFolder:'/'+opts+'/',
 				tileSize:256,
 				background:'#EEEEEE',
 				imageSize:imageSize,
