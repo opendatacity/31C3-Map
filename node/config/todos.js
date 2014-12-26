@@ -1,7 +1,7 @@
 var items = {
 	'originals':{},
-	'overview_iso':{needs:['originals_iso'], func:'overview', opts:'iso'},
-	'overview_top':{needs:['originals_iso'], func:'overview', opts:'top'},
+	'overview_iso':{needs:['originals'], func:'overview', opts:'iso'},
+	'overview_top':{needs:['originals'], func:'overview', opts:'top'},
 	'tiles_iso':{needs:['overview_iso'], func:'tiles', opts:'iso'},
 	'tiles_top':{needs:['overview_top'], func:'tiles', opts:'top'}
 }

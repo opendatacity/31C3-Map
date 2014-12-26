@@ -129,6 +129,7 @@ function expandPattern(list) {
 
 function gmMultiOverlay(opts, callback) {
 	log.debug('\nmyutils.gmMultiOverlay');
+	log.info('   Merging floor plans');
 
 	var filename = path.join(config.imageFolder, opts.filename);
 	ensureFolder(path.dirname(filename));
