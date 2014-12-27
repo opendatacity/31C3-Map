@@ -149,15 +149,18 @@ function Map() {
 			config.map.labelLayers.forEach(function (layer) {
 				if (!layer.active || !layer.entries) return;
 				layer.entries.forEach(function (entry) {
+					if (entry.bbox.x0 > x0 + areaSize) return;
+					if (entry.bbox.y0 > y0 + areaSize) return;
+					if (entry.bbox.x1 < x0) return;
+					if (entry.bbox.y1 < y0) return;
 
 					switch (entry.type) {
 						case 'label':
-							var size = Math.pow(0.5, entry.depth)*128*zoomFactor;
 							var x = (entry.pPoint[0]-x0)*zoomFactor;
 							var y = (entry.pPoint[1]-y0)*zoomFactor;
 
 							ctx.fillStyle = '#000';
-							ctx.font = 'normal 300 '+size+'px "Helvetica Neue"';
+							ctx.font = entry.getFontStyle(zoomFactor);
 							ctx.textAlign = 'center';
 							ctx.textBaseline = 'middle';
 							ctx.beginPath();
@@ -167,6 +170,16 @@ function Map() {
 						default:
 							console.error('Unknown Type "'+entry.label+'"');
 					}
+
+					ctx.beginPath();
+					ctx.strokeStyle = '#f00';
+					ctx.rect(
+						(entry.bbox.x0-x0)*zoomFactor,
+						(entry.bbox.y0-y0)*zoomFactor,
+						(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
+						(entry.bbox.y1-entry.bbox.y0)*zoomFactor
+					);
+					ctx.stroke();
 				})
 			})
 
@@ -180,9 +193,23 @@ function Map() {
 
 		function loadLabelLayer(layer) {
 			$.getJSON(layer.url, function (data) {
+				var ctx = $('#tempCanvas').get(0).getContext('2d');
 				layer.entries = data.entries;
 				layer.entries.forEach(function (entry) {
 					entry.pPoint = P.project(entry.point, 'top', 'global');
+					entry.fontSize = Math.pow(2, 7-entry.depth);
+					entry.getFontStyle = function (zoom) {
+						return 'normal 300 '+(entry.fontSize*zoom)+'px "Helvetica Neue"'
+					}
+					ctx.font = entry.getFontStyle(0.6);
+					var width = ctx.measureText(entry.label).width/2;
+					var height = entry.fontSize*0.5;
+					entry.bbox = {
+						x0: entry.pPoint[0] - width,
+						y0: entry.pPoint[1] - height,
+						x1: entry.pPoint[0] + width,
+						y1: entry.pPoint[1] + height
+					}
 				})
 				if (layer.active) canvasTiles.redraw();
 			})
@@ -201,7 +228,7 @@ L.TileLayer.CanvasRetina = L.TileLayer.Canvas.extend({
 		}
 		tile.onselectstart = tile.onmousemove = L.Util.falseFn;
 		return tile;
-	},
+	}
 });
 
 
