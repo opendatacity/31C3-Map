@@ -1,7 +1,7 @@
 $(function () {
 	var parameters = window.location.search;
 	parameters = parameters.replace(/^\?+/g, '');
-	parameters = parameters.replace(/%22/g, '"');
+	parameters = decodeURI(parameters);
 	try {
 		parameters = JSON.parse(parameters);
 	} catch (e) {
@@ -156,7 +156,7 @@ $(function () {
 		var labelLayers = LabelLayers();
 		labelLayers.load();
 		var selectedEntry = false;
-		
+
 		map.on('mousedown', function (e) {
 			if (parameters.editMode) {
 				selectedEntry = labelLayers.findEntry([e.latlng.lat, e.latlng.lng]);
