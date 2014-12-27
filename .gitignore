@@ -2,3 +2,5 @@ node/node_modules/
 images/overview/
 31c3-usermap/
 web/layers/
+
+upload.sh
