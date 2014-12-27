@@ -9,12 +9,18 @@ async.eachSeries(queue,
 		log.info('Processing item "'+item.key+'"')
 		if (!converters[item.func]) throw new Error('Unknown converter "'+item.func+'"');
 
-		converters[item.func].checkSkip(item.opts, function (skip) {
-			if (skip) return cb();
+		var checkSkip = converters[item.func].checkSkip;
+
+		if (checkSkip) {
+			converters[item.func].checkSkip(item.opts, function (skip) {
+				if (skip) return cb();
+				converters[item.func].convert(item.opts, cb);
+			})
+		} else {
 			converters[item.func].convert(item.opts, cb);
-		})
+		}
+
 	},
 	function () {
-
 	}
 )

@@ -3,7 +3,8 @@ var items = {
 	'overview_iso':{needs:['originals'], func:'overview', opts:'iso'},
 	'overview_top':{needs:['originals'], func:'overview', opts:'top'},
 	'tiles_iso':{needs:['overview_iso'], func:'tiles', opts:'iso'},
-	'tiles_top':{needs:['overview_top'], func:'tiles', opts:'top'}
+	'tiles_top':{needs:['overview_top'], func:'tiles', opts:'top'},
+	'webconfig':{}
 }
 
 var queue = Object.keys(items).map(function (key) {

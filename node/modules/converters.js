@@ -2,6 +2,7 @@ var config = require('../config/config.js');
 var log = require('./log.js');
 var U = require('./myutils.js');
 
+var fs = require('fs');
 var path = require('path');
 
 module.exports = {
@@ -68,6 +69,43 @@ module.exports = {
 				offsetY: Math.floor((imageSize-conf.height)/2)
 			}, cb)
 		}
+	},
+	'webconfig': {
+		convert:function (opts, cb) {
+			log.debug('\nconverters.webconfig.convert');
 
+			var webConfig = {
+				map: {
+					tileLayers: []
+				}
+			};
+
+			Object.keys(config.overview).forEach(function (key) {
+				var layer = config.overview[key];
+				var size = 16384;
+				var offsetX = (size - layer.width )/2;
+				var offsetY = (size - layer.height)/2;
+				var levels = layer.levels.map(function (level) {
+					return {
+						p0: [level.x+offsetX, level.y+offsetY],
+						dx: [1,0],
+						dy: [0,1]
+					}
+				})
+
+				webConfig.map.tileLayers.push({
+					title: layer.title,
+					name: layer.name,
+					tileUrl: 'tiles/'+key+'/{z}/{x}/{y}.png',
+					levels: levels
+				})
+			})
+
+			webConfig = JSON.stringify(webConfig, null, '\t');
+			webConfig = 'var config = ' + webConfig;
+
+			fs.writeFileSync(config.webConfigFile, webConfig, 'utf8');
+
+		}
 	}
 }
