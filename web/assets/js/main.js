@@ -156,10 +156,7 @@ $(function () {
 		var labelLayers = LabelLayers();
 		labelLayers.load();
 		var selectedEntry = false;
-
-		map.on('mousemove', function (e) {
-			$('#searchtext').val(P.project([e.latlng.lat, e.latlng.lng], 'map', 'top'));
-		})
+		
 		map.on('mousedown', function (e) {
 			if (parameters.editMode) {
 				selectedEntry = labelLayers.findEntry([e.latlng.lat, e.latlng.lng]);
