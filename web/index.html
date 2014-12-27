@@ -31,7 +31,8 @@
 			<div id="btnmarker" class="btn btn3m" data-toggle="button"><div id="marker-icon"></div></div>
 		-->
 			<div id="editMenu">
-				<button id="btnEdit" type="button" class="btn btn-default btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">Edit</button>
+				<button id="btnEdit" type="button" class="btn btn-default btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">Edit Map</button>
+				<button type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalAddLabel">Add Label</button>
 			</div>
 		</div>
 		<div id="mapWrapper">
@@ -39,5 +40,40 @@
 		</div>
 		<div id="footer"><input type="text" id="url" /></div>
 		<canvas id="tempCanvas" width="1" height="1" style="display:none"></canvas>
+
+		<div class="modal fade" id="modalAddLabel" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">add new label</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="addLabelText">Text</label>
+							<input type="text" class="form-control" id="addLabelText" placeholder="Text">
+							<span class="help-block">Text for the label.</span>
+						</div>
+						<div class="form-group">
+							<label for="addLabelText">Size</label>
+							<input type="number" class="form-control" id="addLabelSize" value="2">
+							<span class="help-block">Size of the label, with an unusual logic. Use
+								<ul>
+									<li><b>0</b> for huge labels, like "Hall 1".</li>
+									<li><b>1</b> for medium labels, like rooms, areas.</li>
+									<li><b>2</b> for small labels, like assemblies.</li>
+									<li>...</li>
+								</ul>
+							</span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abort</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="btnAddLabel">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</body>
 </html>

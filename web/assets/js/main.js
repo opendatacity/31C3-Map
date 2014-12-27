@@ -10,7 +10,14 @@ $(function () {
 			setTimeout(function () {
 				parameters.editMode = $('#btnEdit').hasClass('active');
 				map.editMode(parameters.editMode);
+				$('.editButton').toggleClass('disabled', !parameters.editMode);
 			})
+		})
+		$('#btnAddLabel').click(function () {
+			var text = $('#addLabelText').val();
+			var size = parseInt($('#addLabelSize').val(), 10);
+			if ((size < 0) || (size > 3)) return;
+			map.addLabel(text, size);
 		})
 	}
 
@@ -149,7 +156,7 @@ $(function () {
 		map.on('mousedown', function (e) {
 			if (parameters.editMode) {
 				selectedEntry = labelLayers.findEntry([e.latlng.lat, e.latlng.lng]);
-				selectedEntry.moveTo([e.latlng.lat, e.latlng.lng]);
+				if (selectedEntry) selectedEntry.moveTo([e.latlng.lat, e.latlng.lng]);
 			}
 		})
 		map.on('mousemove', function (e) {
@@ -294,8 +301,16 @@ $(function () {
 							canvasTiles.redraw();
 						}
 					}
-					console.log(foundEntry);
+				},
+				addLabel: function (text, size) {
+					var point = map.getCenter();
+					point = [point.lat, point.lng];
+					point = P.project(point, 'map', 'top');
 
+					var entry = {type:"label", depth:size, title:text, point:point};
+					config.map.labelLayers[0].entries.push(entry);
+					initEntry(entry);
+					canvasTiles.redraw();
 				}
 			}
 		}
@@ -339,6 +354,9 @@ $(function () {
 					if (map.tap) map.tap.enable();
 					$('#map').css('cursor', '');
 				}
+			},
+			addLabel: function (text, size) {
+				labelLayers.addLabel(text, size);
 			}
 		}
 	}
