@@ -86,10 +86,13 @@ module.exports = {
 				var offsetX = (size - layer.width )/2;
 				var offsetY = (size - layer.height)/2;
 				var levels = layer.levels.map(function (level) {
+					var x0 = level.x + offsetX;
+					var y0 = level.y + offsetY;
 					return {
-						p0: [level.x+offsetX, level.y+offsetY],
-						dx: [1,0],
-						dy: [0,1]
+						p0: [x0, y0],
+						dx: [1, 0],
+						dy: [0, 1],
+						c:  [x0 + (level.cx || 0), y0 + (level.cy || 0)]
 					}
 				})
 
