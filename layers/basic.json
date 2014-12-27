@@ -1,6 +1,7 @@
 {
    "entries": [
       {"type":"label","title":"c-base","depth":1,"point":[0,2962,1229]},
+      {"type":"label","title":"OpenStreetMap","depth":2,"point":[1,2816,1707]},
       {"type":"label","title":"hall 2","depth":0,"point":[2,3994,1281]},
       {"type":"label","title":"hall 1","depth":0,"point":[2,2986,1665]},
       {"type":"label","title":"hall G","depth":0,"point":[2,1690,1809]},
