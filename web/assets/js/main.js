@@ -8,10 +8,10 @@ function Map() {
 
 	var projection = {
 		project: function (latlng) {
-			return new L.Point(latlng.lat/f, latlng.lng/f);
+			return new L.Point(latlng.lng/f, -latlng.lat/f);
 		},
 		unproject: function (point) {
-			return new L.LatLng(point.x*f, point.y*f);
+			return new L.LatLng(-point.y*f, point.x*f);
 		}
 	};
 
@@ -27,8 +27,8 @@ function Map() {
 		minZoom: 0,
 		maxZoom: 8,
 		zoom: 0,
-		center: [0.5*f,0.5*f],
-		maxBounds: [[0,0],[f,f]],
+		center: [-0.5*f,0.5*f],
+		maxBounds: [[-f,0],[0,f]],
 		crs: crs
 	});
 	
