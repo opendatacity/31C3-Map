@@ -1,3 +1,5 @@
-[
-	{"type":"label", "size":0, "title":"Hall 1", "point":[0,0,0]}
-]
+{
+	"entries": [
+		{"type":"label", "depth":0, "title":"Hall 1", "point":[0,0,0]}
+	]
+}

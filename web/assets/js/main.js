@@ -124,6 +124,8 @@ function Map() {
 		*/
 	}
 
+	loadLabelLayers();
+
 	map.on('mousemove', function (e) {
 		$('#searchtext').val(P.project([e.latlng.lat, e.latlng.lng], 'map', 'top'))
 	})
@@ -131,7 +133,81 @@ function Map() {
 	function sqr(x) {
 		return x*x;
 	}
+
+	function loadLabelLayers() {
+
+		var canvasTiles = L.tileLayer.canvasRetina({async:true});
+		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
+			var ctx = canvas.getContext('2d');
+
+			var tileSize = canvas.width;
+			var areaSize = Math.pow(2, 14-zoom);
+			var zoomFactor = tileSize/areaSize;
+			var x0 = tilePoint.x*areaSize;
+			var y0 = tilePoint.y*areaSize;
+
+			config.map.labelLayers.forEach(function (layer) {
+				if (!layer.active || !layer.entries) return;
+				layer.entries.forEach(function (entry) {
+
+					switch (entry.type) {
+						case 'label':
+							var size = Math.pow(0.5, entry.depth)*128*zoomFactor;
+							var x = (entry.pPoint[0]-x0)*zoomFactor;
+							var y = (entry.pPoint[1]-y0)*zoomFactor;
+
+							ctx.fillStyle = '#000';
+							ctx.font = 'normal 300 '+size+'px "Helvetica Neue"';
+							ctx.textAlign = 'center';
+							ctx.textBaseline = 'middle';
+							ctx.beginPath();
+							ctx.fillText(entry.title, x, y);
+							ctx.fill();
+						break;
+						default:
+							console.error('Unknown Type "'+entry.label+'"');
+					}
+				})
+			})
+
+			canvasTiles.tileDrawn(canvas);
+		}
+		canvasTiles.addTo(map);
+
+		config.map.labelLayers.forEach(function (layer) {
+			if (layer.active) loadLabelLayer(layer);
+		})
+
+		function loadLabelLayer(layer) {
+			$.getJSON(layer.url, function (data) {
+				layer.entries = data.entries;
+				layer.entries.forEach(function (entry) {
+					entry.pPoint = P.project(entry.point, 'top', 'global');
+				})
+				if (layer.active) canvasTiles.redraw();
+			})
+		}
+	}
 }
+
+L.TileLayer.CanvasRetina = L.TileLayer.Canvas.extend({
+	_createTile: function () {
+		var tile = L.DomUtil.create('canvas', 'leaflet-tile');
+		if (L.Browser.retina) {
+			tile.width = tile.height = this.options.tileSize*2;
+			tile.style.width = tile.style.height = this.options.tileSize + 'px';
+		} else {
+			tile.width = tile.height = this.options.tileSize;
+		}
+		tile.onselectstart = tile.onmousemove = L.Util.falseFn;
+		return tile;
+	},
+});
+
+
+L.tileLayer.canvasRetina = function (options) {
+	return new L.TileLayer.CanvasRetina(options);
+};
 
 var P = function () {
 	// Globale Projektion ist [0..16384,0..16384], euklidisch, wie ein großes Bild, mit [0,0] links oben.
