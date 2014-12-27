@@ -195,6 +195,14 @@ var config = {
 					}
 				]
 			}
+		],
+		"labelLayers": [
+			{
+				"id": "basic",
+				"type": "json",
+				"url": "layers/basic.json",
+				"active": true
+			}
 		]
 	}
 }

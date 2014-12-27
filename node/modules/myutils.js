@@ -53,7 +53,7 @@ function download(urls, filenames, callback) {
 }
 
 function copy(filesFrom, filesTo, callback) {
-	log.debug('\nmyutils.download');
+	log.debug('\nmyutils.copy');
 
 	if (filesFrom.length != filesTo.length) throw new Error('Url and Filenames should have the same length');
 

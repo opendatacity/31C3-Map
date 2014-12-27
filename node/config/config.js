@@ -4,6 +4,8 @@ var mainFolder = path.join(__dirname, '../../');
 var config = {
 	imageFolder: mainFolder+'images/',
 	tileFolder: mainFolder+'web/tiles/',
+	localLayerFolder: mainFolder+'layers/',
+	webLayerFolder: mainFolder+'web/layers/',
 	usermapFolder: mainFolder+'../31c3-usermap/renderings/',
 	webConfigFile: mainFolder+'web/config.js',
 	overview: {

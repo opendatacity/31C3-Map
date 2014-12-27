@@ -76,7 +76,8 @@ module.exports = {
 
 			var webConfig = {
 				map: {
-					tileLayers: []
+					tileLayers: [],
+					labelLayers: []
 				}
 			};
 
@@ -104,11 +105,31 @@ module.exports = {
 				})
 			})
 
+
+			require('../../layers/layers.js').layers.forEach(function (layer) {
+				webConfig.map.labelLayers.push({
+					title:  layer.title,
+					id:     layer.id,
+					type:   layer.type,
+					url:    (layer.local ? 'layers/' : '' ) + layer.url,
+					active: layer.active || false
+				})
+				if (layer.local) {
+					U.copy(
+						[path.join(config.localLayerFolder, layer.url)],
+						[path.join(config.webLayerFolder,   layer.url)]
+					)
+				}
+			});
+
 			webConfig = JSON.stringify(webConfig, null, '\t');
 			webConfig = 'var config = ' + webConfig;
 
 			fs.writeFileSync(config.webConfigFile, webConfig, 'utf8');
 
+
+
+			cb();
 		}
 	}
 }
