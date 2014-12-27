@@ -326,6 +326,11 @@ $(function () {
 				},
 				exportLayer: function () {
 					var layer = config.map.labelLayers[0];
+					layer.entries.sort(function (a, b) {
+						if (a.point[0] != b.point[0]) return a.point[0] - b.point[0];
+						if (a.point[2] != b.point[2]) return a.point[2] - b.point[2];
+						return a.point[1] - b.point[1];
+					})
 					var result = layer.entries.map(function (entry) {
 						var line = {
 							type:entry.type,
