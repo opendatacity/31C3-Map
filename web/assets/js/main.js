@@ -229,21 +229,24 @@ $(function () {
 									ctx.beginPath();
 									ctx.fillText(entry.title, x, y);
 									ctx.fill();
-									if (parameters.editMode) ctx.stroke();
 								break;
 								default:
 									console.error('Unknown Type "'+entry.label+'"');
 							}
 
-							ctx.beginPath();
-							ctx.strokeStyle = '#f00';
-							ctx.rect(
-								(entry.bbox.x0-x0)*zoomFactor,
-								(entry.bbox.y0-y0)*zoomFactor,
-								(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
-								(entry.bbox.y1-entry.bbox.y0)*zoomFactor
-							);
-							ctx.stroke();
+
+							if (parameters.editMode) {
+								ctx.beginPath();
+								ctx.strokeStyle = '#f00';
+								ctx.lineWidth = tileSize/128;
+								ctx.rect(
+									(entry.bbox.x0-x0)*zoomFactor,
+									(entry.bbox.y0-y0)*zoomFactor,
+									(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
+									(entry.bbox.y1-entry.bbox.y0)*zoomFactor
+								);
+								ctx.stroke();
+							}
 						})
 					})
 
@@ -337,6 +340,9 @@ $(function () {
 					return result;
 				},
 				importLayer: function (text) {
+				},
+				redraw: function () {
+					canvasTiles.redraw();
 				}
 			}
 		}
@@ -380,6 +386,7 @@ $(function () {
 					if (map.tap) map.tap.enable();
 					$('#map').css('cursor', '');
 				}
+				labelLayers.redraw();
 			},
 			addLabel: labelLayers.addLabel,
 			exportLayer: labelLayers.exportLayer,
