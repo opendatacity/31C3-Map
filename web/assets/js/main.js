@@ -3,14 +3,23 @@ $(function () {
 	parameters = parameters.replace(/^\?+/g, '');
 	parameters = parameters.replace(/%22/g, '"');
 	parameters = JSON.parse(parameters);
-	console.log(parameters);
+
+	if (parameters.edit) {
+		$('body').addClass('edit');
+		$('#btnEdit').click(function (e) {
+			setTimeout(function () {
+				parameters.editMode = $('#btnEdit').hasClass('active');
+				map.editMode(parameters.editMode);
+			})
+		})
+	}
+
 	var map = new Map();
 
 	function Map() {
 		var retina = L.Browser.retina;
 		var f = 16384;
 		var P = P();
-		initLeafletLibs();
 
 		var projection = {
 			project: function (latlng) {
@@ -130,99 +139,32 @@ $(function () {
 			*/
 		}
 
-		loadLabelLayers();
+		var labelLayers = LabelLayers();
+		labelLayers.load();
+		var selectedEntry = false;
 
 		map.on('mousemove', function (e) {
-			$('#searchtext').val(P.project([e.latlng.lat, e.latlng.lng], 'map', 'top'))
+			$('#searchtext').val(P.project([e.latlng.lat, e.latlng.lng], 'map', 'top'));
+		})
+		map.on('mousedown', function (e) {
+			if (parameters.editMode) {
+				selectedEntry = labelLayers.findEntry([e.latlng.lat, e.latlng.lng]);
+				selectedEntry.moveTo([e.latlng.lat, e.latlng.lng]);
+			}
+		})
+		map.on('mousemove', function (e) {
+			if (selectedEntry) selectedEntry.moveTo([e.latlng.lat, e.latlng.lng]);
+		})
+		map.on('mouseup', function (e) {
+			selectedEntry = false;
 		})
 
 		function sqr(x) {
 			return x*x;
 		}
 
-		function loadLabelLayers() {
+		function LabelLayers() {
 
-			var canvasTiles = L.tileLayer.canvasRetina({async:true});
-			canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
-				var ctx = canvas.getContext('2d');
-
-				var tileSize = canvas.width;
-				var areaSize = Math.pow(2, 14-zoom);
-				var zoomFactor = tileSize/areaSize;
-				var x0 = tilePoint.x*areaSize;
-				var y0 = tilePoint.y*areaSize;
-
-				config.map.labelLayers.forEach(function (layer) {
-					if (!layer.active || !layer.entries) return;
-					layer.entries.forEach(function (entry) {
-						if (entry.bbox.x0 > x0 + areaSize) return;
-						if (entry.bbox.y0 > y0 + areaSize) return;
-						if (entry.bbox.x1 < x0) return;
-						if (entry.bbox.y1 < y0) return;
-
-						switch (entry.type) {
-							case 'label':
-								var x = (entry.pPoint[0]-x0)*zoomFactor;
-								var y = (entry.pPoint[1]-y0)*zoomFactor;
-
-								ctx.fillStyle = '#000';
-								ctx.font = entry.getFontStyle(zoomFactor);
-								ctx.textAlign = 'center';
-								ctx.textBaseline = 'middle';
-								ctx.beginPath();
-								ctx.fillText(entry.title, x, y);
-								ctx.fill();
-							break;
-							default:
-								console.error('Unknown Type "'+entry.label+'"');
-						}
-
-						ctx.beginPath();
-						ctx.strokeStyle = '#f00';
-						ctx.rect(
-							(entry.bbox.x0-x0)*zoomFactor,
-							(entry.bbox.y0-y0)*zoomFactor,
-							(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
-							(entry.bbox.y1-entry.bbox.y0)*zoomFactor
-						);
-						ctx.stroke();
-					})
-				})
-
-				canvasTiles.tileDrawn(canvas);
-			}
-			canvasTiles.addTo(map);
-
-			config.map.labelLayers.forEach(function (layer) {
-				if (layer.active) loadLabelLayer(layer);
-			})
-
-			function loadLabelLayer(layer) {
-				$.getJSON(layer.url, function (data) {
-					var ctx = $('#tempCanvas').get(0).getContext('2d');
-					layer.entries = data.entries;
-					layer.entries.forEach(function (entry) {
-						entry.pPoint = P.project(entry.point, 'top', 'global');
-						entry.fontSize = Math.pow(2, 7-entry.depth);
-						entry.getFontStyle = function (zoom) {
-							return 'normal 300 '+(entry.fontSize*zoom)+'px "Helvetica Neue"'
-						}
-						ctx.font = entry.getFontStyle(0.6);
-						var width = ctx.measureText(entry.label).width/2;
-						var height = entry.fontSize*0.5;
-						entry.bbox = {
-							x0: entry.pPoint[0] - width,
-							y0: entry.pPoint[1] - height,
-							x1: entry.pPoint[0] + width,
-							y1: entry.pPoint[1] + height
-						}
-					})
-					if (layer.active) canvasTiles.redraw();
-				})
-			}
-		}
-
-		function initLeafletLibs() {
 			L.TileLayer.CanvasRetina = L.TileLayer.Canvas.extend({
 				_createTile: function () {
 					var tile = L.DomUtil.create('canvas', 'leaflet-tile');
@@ -237,10 +179,125 @@ $(function () {
 				}
 			});
 
-
 			L.tileLayer.canvasRetina = function (options) {
 				return new L.TileLayer.CanvasRetina(options);
 			};
+			var canvasTiles = L.tileLayer.canvasRetina({async:true});
+
+			function load() {
+				canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
+					var ctx = canvas.getContext('2d');
+
+					var tileSize = canvas.width;
+					var areaSize = Math.pow(2, 14-zoom);
+					var zoomFactor = tileSize/areaSize;
+					var x0 = tilePoint.x*areaSize;
+					var y0 = tilePoint.y*areaSize;
+
+					config.map.labelLayers.forEach(function (layer) {
+						if (!layer.active || !layer.entries) return;
+						layer.entries.forEach(function (entry) {
+							if (entry.bbox.x0 > x0 + areaSize) return;
+							if (entry.bbox.y0 > y0 + areaSize) return;
+							if (entry.bbox.x1 < x0) return;
+							if (entry.bbox.y1 < y0) return;
+
+							switch (entry.type) {
+								case 'label':
+									var x = (entry.pPoint[0]-x0)*zoomFactor;
+									var y = (entry.pPoint[1]-y0)*zoomFactor;
+
+									ctx.fillStyle = '#000';
+									ctx.font = entry.getFontStyle(zoomFactor);
+									ctx.textAlign = 'center';
+									ctx.textBaseline = 'middle';
+									ctx.beginPath();
+									ctx.fillText(entry.title, x, y);
+									ctx.fill();
+								break;
+								default:
+									console.error('Unknown Type "'+entry.label+'"');
+							}
+
+							ctx.beginPath();
+							ctx.strokeStyle = '#f00';
+							ctx.rect(
+								(entry.bbox.x0-x0)*zoomFactor,
+								(entry.bbox.y0-y0)*zoomFactor,
+								(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
+								(entry.bbox.y1-entry.bbox.y0)*zoomFactor
+							);
+							ctx.stroke();
+						})
+					})
+
+					canvasTiles.tileDrawn(canvas);
+				}
+				canvasTiles.addTo(map);
+
+				config.map.labelLayers.forEach(function (layer) {
+					if (layer.active) loadLabelLayer(layer);
+				})
+
+				function loadLabelLayer(layer) {
+					$.getJSON(layer.url, function (data) {
+						layer.entries = data.entries;
+						layer.entries.forEach(function (entry) {
+							initEntry(entry);
+						})
+						if (layer.active) canvasTiles.redraw();
+					})
+				}
+			}
+
+			function initEntry(entry) {
+				var ctx = $('#tempCanvas').get(0).getContext('2d');
+
+				entry.pPoint = P.project(entry.point, 'top', 'global');
+				entry.fontSize = Math.pow(2, 7-entry.depth);
+				entry.getFontStyle = function (zoom) {
+					return 'normal 300 '+(entry.fontSize*zoom)+'px "Helvetica Neue"'
+				}
+				ctx.font = entry.getFontStyle(0.6);
+				var width = ctx.measureText(entry.label).width/2;
+				var height = entry.fontSize*0.5;
+				entry.bbox = {
+					x0: entry.pPoint[0] - width,
+					y0: entry.pPoint[1] - height,
+					x1: entry.pPoint[0] + width,
+					y1: entry.pPoint[1] + height
+				}
+			}
+
+			return {
+				load:load,
+				findEntry: function (latlng) {
+					var p = P.project(latlng, 'map', 'global');
+					var foundEntry = false;
+					config.map.labelLayers.some(function (layer) {
+						if (!layer.active) return false;
+						return layer.entries.some(function (entry) {
+							if (entry.bbox.x0 > p[0]) return false;
+							if (entry.bbox.y0 > p[1]) return false;
+							if (entry.bbox.x1 < p[0]) return false;
+							if (entry.bbox.y1 < p[1]) return false;
+							foundEntry = entry;
+							return true;
+						})
+					})
+					if (!foundEntry) return false;
+					return {
+						moveTo:function (latlng) {
+							var p = P.project(latlng, 'map', 'top');
+							foundEntry.point = p;
+							initEntry(foundEntry);
+							canvasTiles.redraw();
+						}
+					}
+					console.log(foundEntry);
+
+				}
+			}
 		}
 
 		function P() {
@@ -265,6 +322,23 @@ $(function () {
 			return {
 				addProjection: addProjection,
 				project: project
+			}
+		}
+		return {
+			editMode: function (mode) {
+				if (mode) {
+					map.dragging.disable();
+					map.touchZoom.disable();
+					map.doubleClickZoom.disable();
+					if (map.tap) map.tap.disable();
+					$('#map').css('cursor', 'default');
+				} else {
+					map.dragging.enable();
+					map.touchZoom.enable();
+					map.doubleClickZoom.enable();
+					if (map.tap) map.tap.enable();
+					$('#map').css('cursor', '');
+				}
 			}
 		}
 	}

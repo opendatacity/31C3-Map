@@ -4,6 +4,7 @@
 		<title>31C3 map</title>
 		
 		<link rel="stylesheet" type="text/css" href="assets/libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/libs/bootstrap/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="assets/libs/leaflet/leaflet.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
 
@@ -21,13 +22,17 @@
 	</head>
 	<body>
 		<div style="display:none">Zoomable map of the 31c3. You can also add a marker and send the deep link to share a meeting point.</div>
-		<div id="header">
+		<div id="header" class="">
+			<div id="search"></div>
 			<input id="searchtext" type="text" />
-			<div id="result"><ul></ul></div>
 			<!--
-			<div id="btnsearch" class="btn btn3m" data-toggle="button"><div id="search-icon"></div></div>
-		-->
+
+			<div id="result"><ul></ul></div>
 			<div id="btnmarker" class="btn btn3m" data-toggle="button"><div id="marker-icon"></div></div>
+		-->
+			<div id="editMenu">
+				<button id="btnEdit" type="button" class="btn btn-default btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">Edit</button>
+			</div>
 		</div>
 		<div id="mapWrapper">
 			<div id="map"></div>

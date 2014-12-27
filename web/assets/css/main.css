@@ -5,22 +5,57 @@ html, body, #map {
 	margin: 0;
 	padding: 0;
 }
-
-	#searchtext {
-		width: 100%;
+	#header {
+		height: 26px;
+		overflow: hidden;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
 	}
+
+		#searchtext {
+			width: 100%;
+			height: 26px;
+		}
+
+		#editMenu {
+			margin-top: 2px;
+			margin-left: 2px;
+			display: none;
+		}
 
 	#mapWrapper {
 		position: absolute;
-		top: 52px;
+		top: 26px;
 		left: 0px;
 		right: 0px;
-		bottom: 0px;
+		bottom: 26px;
 	}
 
 		#map {
 			background: #eee;
 		}
+
+	#footer {
+		position: absolute;
+		height: 26px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+	}
+
+	body.edit #header {
+		height: 52px;
+	}
+
+	body.edit #editMenu {
+		display: block;
+	}
+
+	body.edit #mapWrapper {
+		top: 52px;
+	}
 
 /*
 
