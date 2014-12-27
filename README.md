@@ -1,6 +1,7 @@
 # 31c3-map
 
-Map for the 31c3.
+
+[Map for the 31c3](https://apps.opendatacity.de/31c3/).
 
 Well, this map is a new implementation, that renders labels, markers, etc. in the web client via Leaflet.TileLayer.Canvas.
 
@@ -8,7 +9,7 @@ The big advantage: You can edit features like labels or symbols in the web clien
 
 ## Edit Mode
 
-**Open**: [http://apps.opendatacity.de/31c3/**?{"edit":true}**](http://apps.opendatacity.de/31c3/?{"edit":true})
+**Open**: [https://apps.opendatacity.de/31c3/**?{"edit":true}**](https://apps.opendatacity.de/31c3/?{"edit":true})
 
 **Zoom/Pan** to the area, where you want to edit.
 
