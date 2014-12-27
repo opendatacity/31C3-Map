@@ -2,7 +2,11 @@ $(function () {
 	var parameters = window.location.search;
 	parameters = parameters.replace(/^\?+/g, '');
 	parameters = parameters.replace(/%22/g, '"');
-	parameters = JSON.parse(parameters);
+	try {
+		parameters = JSON.parse(parameters);
+	} catch (e) {
+		parameters = {};
+	}
 
 	if (parameters.edit) {
 		$('body').addClass('edit');
@@ -18,6 +22,9 @@ $(function () {
 			var size = parseInt($('#addLabelSize').val(), 10);
 			if ((size < 0) || (size > 3)) return;
 			map.addLabel(text, size);
+		})
+		$('#btnShowExportLayer').click(function () {
+			$('#modalExportLayer textarea').val(map.exportLayer())
 		})
 	}
 
@@ -214,6 +221,7 @@ $(function () {
 									var x = (entry.pPoint[0]-x0)*zoomFactor;
 									var y = (entry.pPoint[1]-y0)*zoomFactor;
 
+									ctx.strokeStyle = '#F00';
 									ctx.fillStyle = '#000';
 									ctx.font = entry.getFontStyle(zoomFactor);
 									ctx.textAlign = 'center';
@@ -221,6 +229,7 @@ $(function () {
 									ctx.beginPath();
 									ctx.fillText(entry.title, x, y);
 									ctx.fill();
+									if (parameters.editMode) ctx.stroke();
 								break;
 								default:
 									console.error('Unknown Type "'+entry.label+'"');
@@ -311,6 +320,23 @@ $(function () {
 					config.map.labelLayers[0].entries.push(entry);
 					initEntry(entry);
 					canvasTiles.redraw();
+				},
+				exportLayer: function () {
+					var layer = config.map.labelLayers[0];
+					var result = layer.entries.map(function (entry) {
+						var line = {
+							type:entry.type,
+							title:entry.title,
+							depth:entry.depth,
+							point:entry.point
+						}
+						return '      '+JSON.stringify(line);
+					})
+					result = result.join(',\n');
+					result = '{\n   "entries": [\n' + result + '\n   ]\n}';
+					return result;
+				},
+				importLayer: function (text) {
 				}
 			}
 		}
@@ -355,9 +381,9 @@ $(function () {
 					$('#map').css('cursor', '');
 				}
 			},
-			addLabel: function (text, size) {
-				labelLayers.addLabel(text, size);
-			}
+			addLabel: labelLayers.addLabel,
+			exportLayer: labelLayers.exportLayer,
+			importLayer: labelLayers.importLayer
 		}
 	}
 })

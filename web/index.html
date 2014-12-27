@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -33,6 +34,8 @@
 			<div id="editMenu">
 				<button id="btnEdit" type="button" class="btn btn-default btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">Edit Map</button>
 				<button type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalAddLabel">Add Label</button>
+				<button id="btnShowImportLayer" type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalImportLayer">Import</button>
+				<button id="btnShowExportLayer" type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalExportLayer">Export</button>
 			</div>
 		</div>
 		<div id="mapWrapper">
@@ -46,7 +49,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title" id="myModalLabel">add new label</h4>
+						<h4 class="modal-title">Add New Label</h4>
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
@@ -75,5 +78,39 @@
 			</div>
 		</div>
 
+		<div class="modal fade" id="modalImportLayer" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Import Layer</h4>
+					</div>
+					<div class="modal-body">
+						<textarea class="form-control" rows="20"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abort</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="btnImportLayer">Import</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="modalExportLayer" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Export Layer</h4>
+					</div>
+					<div class="modal-body">
+						<textarea class="form-control" rows="20"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

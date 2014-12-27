@@ -57,6 +57,11 @@ html, body, #map {
 		top: 52px;
 	}
 
+.modal textarea {
+	font-family: monospace;
+	font-size: 10px;
+}
+
 /*
 
 #header {
