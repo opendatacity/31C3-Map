@@ -208,42 +208,44 @@ $(function () {
 					config.map.labelLayers.forEach(function (layer) {
 						if (!layer.active || !layer.entries) return;
 						layer.entries.forEach(function (entry) {
-							if (entry.bbox.x0 > x0 + areaSize) return;
-							if (entry.bbox.y0 > y0 + areaSize) return;
-							if (entry.bbox.x1 < x0) return;
-							if (entry.bbox.y1 < y0) return;
+							entry.points.forEach(function (point) {
+								if (point.bbox.x0 > x0 + areaSize) return;
+								if (point.bbox.y0 > y0 + areaSize) return;
+								if (point.bbox.x1 < x0) return;
+								if (point.bbox.y1 < y0) return;
 
-							switch (entry.type) {
-								case 'label':
-									var x = (entry.pPoint[0]-x0)*zoomFactor;
-									var y = (entry.pPoint[1]-y0)*zoomFactor;
+								switch (entry.type) {
+									case 'label':
+										var x = (point.pCoord[0]-x0)*zoomFactor;
+										var y = (point.pCoord[1]-y0)*zoomFactor;
 
-									ctx.strokeStyle = '#F00';
-									ctx.fillStyle = '#000';
-									ctx.font = entry.getFontStyle(zoomFactor);
-									ctx.textAlign = 'center';
-									ctx.textBaseline = 'middle';
+										ctx.strokeStyle = '#F00';
+										ctx.fillStyle = '#000';
+										ctx.font = entry.getFontStyle(zoomFactor);
+										ctx.textAlign = 'center';
+										ctx.textBaseline = 'middle';
+										ctx.beginPath();
+										ctx.fillText(entry.title, x, y);
+										ctx.fill();
+									break;
+									default:
+										console.error('Unknown Type "'+entry.label+'"');
+								}
+
+
+								if (parameters.editMode) {
 									ctx.beginPath();
-									ctx.fillText(entry.title, x, y);
-									ctx.fill();
-								break;
-								default:
-									console.error('Unknown Type "'+entry.label+'"');
-							}
-
-
-							if (parameters.editMode) {
-								ctx.beginPath();
-								ctx.strokeStyle = '#f00';
-								ctx.lineWidth = tileSize/128;
-								ctx.rect(
-									(entry.bbox.x0-x0)*zoomFactor,
-									(entry.bbox.y0-y0)*zoomFactor,
-									(entry.bbox.x1-entry.bbox.x0)*zoomFactor,
-									(entry.bbox.y1-entry.bbox.y0)*zoomFactor
-								);
-								ctx.stroke();
-							}
+									ctx.strokeStyle = '#f00';
+									ctx.lineWidth = tileSize/128;
+									ctx.rect(
+										(point.bbox.x0-x0)*zoomFactor,
+										(point.bbox.y0-y0)*zoomFactor,
+										(point.bbox.x1-point.bbox.x0)*zoomFactor,
+										(point.bbox.y1-point.bbox.y0)*zoomFactor
+									);
+									ctx.stroke();
+								}
+							})
 						})
 					})
 
@@ -268,8 +270,6 @@ $(function () {
 
 			function initEntry(entry) {
 				var ctx = $('#tempCanvas').get(0).getContext('2d');
-
-				entry.pPoint = P.project(entry.point, 'top', 'global');
 				entry.fontSize = Math.pow(2, 7-entry.depth);
 				entry.getFontStyle = function (zoom) {
 					return 'normal 300 '+(entry.fontSize*zoom)+'px "Helvetica Neue"'
@@ -277,12 +277,16 @@ $(function () {
 				ctx.font = entry.getFontStyle(0.6);
 				var width = ctx.measureText(entry.label).width/2;
 				var height = entry.fontSize*0.5;
-				entry.bbox = {
-					x0: entry.pPoint[0] - width,
-					y0: entry.pPoint[1] - height,
-					x1: entry.pPoint[0] + width,
-					y1: entry.pPoint[1] + height
-				}
+
+				entry.points.forEach(function (point) {
+					point.pCoord = P.project(point.coord, 'top', 'global');
+					point.bbox = {
+						x0: point.pCoord[0] - width,
+						y0: point.pCoord[1] - height,
+						x1: point.pCoord[0] + width,
+						y1: point.pCoord[1] + height
+					}
+				})
 			}
 
 			return {
