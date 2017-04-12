@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>31C3 map</title>
+		
+		<link rel="stylesheet" type="text/css" href="assets/libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/libs/bootstrap/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/libs/leaflet/leaflet.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="assets/libs/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="assets/libs/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/libs/leaflet/leaflet.js"></script>
+		<script type="text/javascript" src="assets/js/main.js"></script>
+
+		<meta name="HandheldFriendly" content="True" />
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+	</head>
+	<body>
+		<div style="display:none">Zoomable map of the 31c3. You can also add a marker and send the deep link to share a meeting point.</div>
+		<div id="header" class="">
+			<div id="search"></div>
+			<input id="searchtext" type="text" />
+			<!--
+
+			<div id="result"><ul></ul></div>
+			<div id="btnmarker" class="btn btn3m" data-toggle="button"><div id="marker-icon"></div></div>
+		-->
+			<div id="editMenu">
+				<button id="btnEdit" type="button" class="btn btn-default btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">Edit Map</button>
+				<button type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalAddLabel">Add Label</button>
+				<button id="btnShowImportLayer" type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalImportLayer">Import</button>
+				<button id="btnShowExportLayer" type="button" class="btn btn-default btn-xs disabled editButton" data-toggle="modal" data-target="#modalExportLayer">Export</button>
+			</div>
+		</div>
+		<div id="mapWrapper">
+			<div id="map"></div>
+		</div>
+		<div id="footer"><input type="text" id="url" /></div>
+		<canvas id="tempCanvas" width="1" height="1" style="display:none"></canvas>
+
+		<div class="modal fade" id="modalAddLabel" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Add New Label</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="addLabelText">Text</label>
+							<input type="text" class="form-control" id="addLabelText" placeholder="Text">
+							<span class="help-block">Text for the label.</span>
+						</div>
+						<div class="form-group">
+							<label for="addLabelText">Size</label>
+							<input type="number" class="form-control" id="addLabelSize" value="2">
+							<span class="help-block">Size of the label, with an unusual logic. Use
+								<ul>
+									<li><b>0</b> for huge labels, like "Hall 1".</li>
+									<li><b>1</b> for medium labels, like rooms, areas.</li>
+									<li><b>2</b> for small labels, like assemblies.</li>
+									<li>...</li>
+								</ul>
+							</span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abort</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="btnAddLabel">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="modalImportLayer" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Import Layer</h4>
+					</div>
+					<div class="modal-body">
+						<textarea class="form-control" rows="20"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abort</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="btnImportLayer">Import</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="modalExportLayer" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Export Layer</h4>
+					</div>
+					<div class="modal-body">
+						<textarea class="form-control" rows="20"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

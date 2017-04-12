@@ -1,9 +1,13 @@
 {
    "entries": [
-      {"type":"label","title":"c-base","depth":1,"points":[{"coord":[0,2962,1229]}]},
-      {"type":"label","title":"hall 1","depth":0,"points":[{"coord":[2,2986,1665]},{"coord":[3,3010,1775]},{"coord":[4,2986,1795]}]},
-      {"type":"label","title":"hall 2","depth":0,"points":[{"coord":[2,3994,1281]},{"coord":[3,4074,1423]},{"coord":[4,4050,1451]}]},
-      {"type":"label","title":"hall G","depth":0,"points":[{"coord":[2,1690,1809]}]},
-      {"type":"label","title":"OpenStreetMap","depth":2,"points":[{"coord":[1,2816,1707]}]}
+      {"type":"label","title":"c-base","depth":1,"point":[0,2962,1229]},
+      {"type":"label","title":"OpenStreetMap","depth":2,"point":[1,2816,1707]},
+      {"type":"label","title":"hall 2","depth":0,"point":[2,3994,1281]},
+      {"type":"label","title":"hall 1","depth":0,"point":[2,2986,1665]},
+      {"type":"label","title":"hall G","depth":0,"point":[2,1690,1809]},
+      {"type":"label","title":"hall 2","depth":0,"point":[3,4074,1423]},
+      {"type":"label","title":"hall 1","depth":0,"point":[3,3010,1775]},
+      {"type":"label","title":"hall 2","depth":0,"point":[4,4050,1451]},
+      {"type":"label","title":"hall 1","depth":0,"point":[4,2986,1795]}
    ]
 }
